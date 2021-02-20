@@ -10,10 +10,17 @@ import core
 import RxSwift
 
 public extension API {
-    func request<T: APIRequest>(_ request: T) throws -> Single<T.Response> {
-        let urlRequest = try self.build(request)
-        
+    func request<T: APIRequest>(_ request: T) -> Single<T.Response> {
         return Single.create { [session, decoder] observer -> Disposable in
+            let urlRequest: URLRequest
+            
+            do {
+                urlRequest = try self.build(request)
+            } catch {
+                observer(.failure(error))
+                return Disposables.create()
+            }
+            
             let task = session.dataTask(with: urlRequest) { [decoder] data, response, error in
                 do {
                     guard let response = response as? HTTPURLResponse else { throw APIError.unexpectedResponse }

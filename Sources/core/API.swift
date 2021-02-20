@@ -41,8 +41,15 @@ open class API {
         return urlRequest
     }
     
-    public func request<T: APIRequest>(_ request: T, completion: @escaping ((T.Response?, Error?) -> Void)) throws {
-        let urlRequest = try self.build(request)
+    public func request<T: APIRequest>(_ request: T, completion: @escaping (Result<T.Response, Error>) -> Void) {
+        let urlRequest: URLRequest
+        
+        do {
+            urlRequest = try self.build(request)
+        } catch {
+            completion(.failure(error))
+            return
+        }
         
         let task = session.dataTask(with: urlRequest) { [decoder] data, response, error in
             do {
@@ -53,12 +60,12 @@ open class API {
                 
                 if let data = data {
                     let json = try decoder.decode(T.Response.self, from: data)
-                    completion(json, nil)
+                    completion(.success(json))
                 }
-                else if let error = error { completion(nil, error) }
+                else if let error = error { completion(.failure(error)) }
                 else { throw APIError.noResponse }
             } catch {
-                completion(nil, error)
+                completion(.failure(error))
             }
         }
         

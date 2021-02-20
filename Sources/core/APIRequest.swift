@@ -17,7 +17,7 @@ public enum AccessMethod: String, CaseIterable {
 }
 
 public protocol APIRequest {
-    associatedtype Response: APIResponse
+    associatedtype Response: Decodable
     
     var accessMethod: AccessMethod { get }
     var endpoint    : String { get }
