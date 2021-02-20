@@ -43,7 +43,7 @@ struct CurrentWeatherRequest: APIRequest {
     
     var accessMethod: AccessMethod { .apiKey } // The type of authentication required 
     var endpoint    : String { "/current" } // The actual endpoint, without including the base url
-    var method      : HTTPRequestMethod { .get } // The HTTP request type
+    var method      : HTTPRequestMethod { .GET } // The HTTP request type
     var headers     : Dictionary<String, String> { [:] } // Any headers required (not including the api key)
     var params      : Dictionary<String, String> { return ["zipcode": zipcode] } // Any params required for the request
     

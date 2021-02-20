@@ -6,8 +6,11 @@
 //
 
 import Foundation
-import core
 import RxSwift
+
+#if canImport(APICommon)
+    import APICommon
+#endif
 
 public extension API {
     func request<T: APIRequest>(_ request: T) -> Single<T.Response> {
